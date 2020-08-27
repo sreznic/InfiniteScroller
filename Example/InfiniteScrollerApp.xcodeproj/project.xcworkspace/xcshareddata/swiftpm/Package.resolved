@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "InfiniteLayout",
+        "repositoryURL": "https://github.com/arnauddorgans/InfiniteLayout.git",
+        "state": {
+          "branch": null,
+          "revision": "227269190fd4b7ccde646e5a2360d0168187875c",
+          "version": "0.4.2"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
