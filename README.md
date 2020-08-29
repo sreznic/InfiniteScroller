@@ -23,6 +23,12 @@ struct ContentView: View {
 and you good to go.
 But if something doesn't go well, you can always clone the repo and check 'Example' folder
 
+### Updating
+
+If you need to update cells which has already been loaded, you can enable this feature by passing
+'updating' argument to the constructor of InfiniteScroller and setting it to true. Recommended to be disabled if you
+don't need this feature
+
 ## Installation
 
 ### [Swift Package Manager](https://github.com/apple/swift-package-manager)
