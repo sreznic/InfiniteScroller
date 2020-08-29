@@ -13,4 +13,6 @@ struct InfiniteScrollerVCConfiguration {
     var cellHeightOrWidth: CGFloat
     var cellSpacing: CGFloat
     var direction: UICollectionView.ScrollDirection
+    // It means that each visible cell will refresh its View after selectedItem changes. May be disabled to gain speed.
+    var updatingVisibleCells: Bool
 }

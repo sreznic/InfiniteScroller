@@ -20,12 +20,13 @@ struct _InfiniteScroller<Item: Equatable, Content: View>: UIViewControllerRepres
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<_InfiniteScroller>) -> InfiniteScrollerVC<Item, Content> {
         let selectedIndex = items.firstIndex(where: { $0 == selectedItem })!
-        let InfiniteVC = InfiniteScrollerVC(configuration: configuration, items: items, selectedIndex: selectedIndex, rowContent: rowContent)
-        InfiniteVC.delegate = AnyInfiniteScrollerVCDelegate(delegate: context.coordinator)
-        return InfiniteVC
+        let infiniteVC = InfiniteScrollerVC(configuration: configuration, items: items, selectedIndex: selectedIndex, rowContent: rowContent)
+        infiniteVC.delegate = AnyInfiniteScrollerVCDelegate(delegate: context.coordinator)
+        return infiniteVC
     }
     
     func updateUIViewController(_ uiViewController: InfiniteScrollerVC<Item, Content>, context: Context) {
+        uiViewController.infiniteCollectionView.reloadData()
     }
     
     func makeCoordinator() -> Coordinator {
@@ -52,16 +53,19 @@ public struct InfiniteScroller<Item: Equatable, Content: View>: View {
     private let items: [Item]
     private let visibleCells: Int
     private let cellSpacing: CGFloat
+    private let updating: Bool
     
     @Binding var selectedItem: Item
     
-    public init(direction: InfiniteDirection, items: [Item], selectedItem: Binding<Item>, visibleCells: Int, cellSpacing: CGFloat, @ViewBuilder rowContent: @escaping (Item) -> Content) {
+    /// - Parameter updating: if the property is true then it means that each visible cell will refresh its View after selectedItem changes. May be disabled to gain speed. Default false
+    public init(direction: InfiniteDirection, items: [Item], selectedItem: Binding<Item>, visibleCells: Int, cellSpacing: CGFloat, updating: Bool = false, @ViewBuilder rowContent: @escaping (Item) -> Content) {
         self.direction = direction
         self.rowContent = rowContent
         self.items = items
         self._selectedItem = selectedItem
         self.cellSpacing = cellSpacing
         self.visibleCells = visibleCells
+        self.updating = updating
     }
     public var body: some View {
         _InfiniteScroller(items: items, selectedItem: $selectedItem, configuration: configuration, rowContent: { item in
@@ -82,7 +86,7 @@ public struct InfiniteScroller<Item: Equatable, Content: View>: View {
             direction = .vertical
         }
         
-        return .init(cellHeightOrWidth: cellHeightOrWidth, cellSpacing: cellSpacing, direction: direction)
+        return .init(cellHeightOrWidth: cellHeightOrWidth, cellSpacing: cellSpacing, direction: direction, updatingVisibleCells: updating)
     }
     
     var width: CGFloat? {

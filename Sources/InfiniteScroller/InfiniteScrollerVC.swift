@@ -11,6 +11,8 @@ import InfiniteLayout
 import UIKit
 import SwiftUI
 
+fileprivate let debug = false
+
 class InfiniteScrollerVC<Item, Content: View>: UIViewController, InfiniteCollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     private var visibleCellsInfo = [(IndexPath, UIViewController)]()
     private var selectedIndex: Int
@@ -33,6 +35,7 @@ class InfiniteScrollerVC<Item, Content: View>: UIViewController, InfiniteCollect
     }
     
     override func viewDidLoad() {
+        if debug { print("viewDidLoad") }
         super.viewDidLoad()
         self.view.addSubview(infiniteCollectionView)
         infiniteCollectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -59,24 +62,54 @@ class InfiniteScrollerVC<Item, Content: View>: UIViewController, InfiniteCollect
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        if debug { print("viewDidAppear") }
         super.viewDidAppear(animated)
         self.infiniteCollectionView.scrollToItem(at: .init(row: self.selectedIndex, section: 0), at: self.infiniteCollectionView.infiniteLayout.scrollDirection == .vertical ? .centeredVertically : .centeredHorizontally, animated: false)
     }
     
     // MARK: - InfiniteCollectionViewDelegate
     func infiniteCollectionView(_ infiniteCollectionView: InfiniteCollectionView, didChangeCenteredIndexPath from: IndexPath?, to: IndexPath?) {
+        if debug { print("infiniteCollectionView didChangeCenteredIndexPath") }
         guard let to = to else { return }
         let realIndexPath = infiniteCollectionView.indexPath(from: to)
         guard let item = items[safe: realIndexPath.row] else { return }
         delegate?.selectItem(item)
+        if configuration.updatingVisibleCells {
+            self.updateVisibleCellsInfoViews()
+        }
+    }
+    
+    func updateVisibleCellsInfoViews() {
+        if debug {
+            print("updateVisibleCellsInfoViews")
+            print("visibleCellsInfo count \(visibleCellsInfo.count)")
+        }
+        visibleCellsInfo.forEach { (indexPath, vc) in
+            let realIndexPath = self.infiniteCollectionView.indexPath(from: indexPath)
+            let item = items[realIndexPath.row]
+            let newVc = UIHostingController(rootView: rowContent(item))
+            vc.view.addSubview(newVc.view)
+            newVc.view.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                newVc.view.topAnchor.constraint(equalTo: vc.view.topAnchor),
+                newVc.view.bottomAnchor.constraint(equalTo: vc.view.bottomAnchor),
+                newVc.view.leftAnchor.constraint(equalTo: vc.view.leftAnchor),
+                newVc.view.rightAnchor.constraint(equalTo: vc.view.rightAnchor)
+            ])
+            
+            if debug { print("vc subviews count \(vc.view.subviews.count) newVc subviews count \(newVc.view.subviews.count)") }
+        }
     }
     
     // MARK: - UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if debug { print("collectionView numberOfItemsInSection") }
         return items.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if debug { print("collectionView cellForItemAt") }
+
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: .cellIdentifier, for: indexPath)
         let realIndexPath = infiniteCollectionView.indexPath(from: indexPath)
         let item = items[realIndexPath.row]
@@ -88,6 +121,8 @@ class InfiniteScrollerVC<Item, Content: View>: UIViewController, InfiniteCollect
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if debug { print("collectionView didEndDisplaying") }
+
         let realIndexPath = infiniteCollectionView.indexPath(from: indexPath)
         if let index = visibleCellsInfo.firstIndex(where: { $0.0 == realIndexPath }) {
             let vc = visibleCellsInfo[index].1
@@ -100,11 +135,15 @@ class InfiniteScrollerVC<Item, Content: View>: UIViewController, InfiniteCollect
     
     // MARK: - UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if debug { print("collectionView didSelectItemAt") }
+
         collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
     }
     
     // MARK: - UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if debug { print("collectionView layout") }
+
         let width: CGFloat
         let height: CGFloat
         switch configuration.direction {
@@ -122,6 +161,7 @@ class InfiniteScrollerVC<Item, Content: View>: UIViewController, InfiniteCollect
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        if debug { print("collectionView layout2") }
         return collectionView.frame.height
     }
     
