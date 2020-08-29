@@ -6,8 +6,14 @@
 [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Platform](https://img.shields.io/cocoapods/p/LFAlertController.svg?style=flat)](http://cocoapods.org/pods/LFAlertController)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+<table cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: none;">
+<tr>
+    <td><img src="https://github.com/cointowitcher/InfiniteScroller/blob/master/docs/time_picker_example.gif" width="412">
+</td>
+    <td><img src="https://github.com/cointowitcher/InfiniteScroller/blob/master/docs/example.gif" width="600"></td>
+    </tr>
+    </table>
 
-<img src="https://github.com/cointowitcher/InfiniteScroller/blob/master/docs/example.gif" width="600" height="419">
 
 ## Example
 
