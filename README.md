@@ -33,6 +33,10 @@ If you need to update cells which has already been loaded, you can enable this f
 'updating' argument to the constructor of InfiniteScroller and setting it to true. Recommended to be disabled if you
 don't need this feature
 
+# How it works?
+
+It uses InfiniteLayout library(https://github.com/arnauddorgans/InfiniteLayout) underneath, so you can extend its functionality
+
 ## Installation
 
 ### [Swift Package Manager](https://github.com/apple/swift-package-manager)
