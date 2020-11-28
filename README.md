@@ -44,7 +44,7 @@ Select File > Swift Packages > Add Package Dependency and enter https://github.c
 
 ## Known issues
 
-- Doesn't work well if the amount of the items is less or equal to visibleCells parameter
+- Items aren't displayed correctly if the amount of the items is less or equal to visibleCells parameter. So, make sure to pass more items than visible cells
 
 ## Contribute
 
